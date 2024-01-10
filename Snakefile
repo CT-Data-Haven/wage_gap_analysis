@@ -27,6 +27,12 @@ rule eda:
     shell:
         'quarto render analysis/wage_gap_eda.qmd'
 
+rule readme:
+    output:
+        'README.md'
+    shell:
+        'quarto render README.qmd'
+
 rule all:
     default_target: True
     run:
