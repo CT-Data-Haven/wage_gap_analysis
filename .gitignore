@@ -5,3 +5,4 @@
 *.duckdb
 .snakemake/
 .vscode/
+usa_*.dat.gz

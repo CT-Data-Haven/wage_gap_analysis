@@ -1,0 +1,446 @@
+---
+title: "wage gap EDA"
+format: gfm
+fig.showtext: true
+---
+
+## setup
+
+```{r}
+#| label: setup
+#| message: false
+library(tidyverse)
+library(showtext)
+
+showtext_opts(dpi = 150)
+sysfonts::font_add_google("Barlow Semi Condensed")
+
+source(here::here("_utils/misc_functions.R"))
+vivid <- rcartocolor::carto_pal(12, "Vivid")
+pal <- setNames(c(
+  vivid[c(1:8, 12)],
+  vivid[1:4],
+  "gray30"
+  ), c(
+    "Men", "Women", "White", "Black", "Latino", "API", "Other race", "Full-time", "Part-time", 
+    "High school or less", "Some college or AA", "Bachelors", "Graduate degree",
+    "Total"))
+
+vir_pal <- viridisLite::turbo(n = 5)
+
+theme_bar <- function(...) {
+  camiller::theme_din(base_family = "Barlow Semi Condensed") +
+    theme(...)
+}
+
+theme_set(theme_bar())
+
+out <- list()
+```
+
+
+```{r}
+make_bars <- function(data, x = sex, y = income, fill = sex, 
+                      position = position_dodge2(), 
+                      y_labels = scales::label_dollar(accuracy = 1, scale = 1e-3, suffix = "k"),
+                      legend = TRUE) {
+  gg <- ggplot(data, aes(x = {{x}}, y = {{y}}, fill = {{fill}}))
+  gg <- gg + geom_col(position = position, alpha = 0.9)
+  gg <- gg + scale_fill_manual(values = pal) 
+  gg <- gg + stylehaven::scale_y_barcontinuous(labels = y_labels)
+  gg <- gg + facet_grid(cols = vars(name), scales = "free_x")
+  if (!legend) {
+    gg <- gg + theme(legend.position = "none")
+  }
+  gg
+}
+
+make_dots <- function(data, x = race, y = income, color = sex, 
+                      y_labels = scales::label_dollar(accuracy = 1, scale = 1e-3, suffix = "k"),
+                      legend = TRUE, flip = TRUE) {
+  gg <- ggplot(data, aes(x = {{x}}, y = {{y}}, color = {{color}}))
+  gg <- gg + geom_path(color = "gray80", linewidth = 3)
+  gg <- gg + geom_point(size = 5)
+  gg <- gg + scale_color_manual(values = pal) 
+  gg <- gg + scale_y_continuous(labels = y_labels)
+  # gg <- gg + facet_grid(cols = vars(name), scales = "free_x")
+  if (!legend) {
+    gg <- gg + theme(legend.position = "none")
+  }
+  if (flip) {
+    gg <- gg + coord_flip()
+  }
+  gg
+}
+
+make_quants <- function(data, x = sex, quant = c("q20", "q25", "q50", "q75", "q80"), facet = race,
+                        y_labels = scales::label_dollar(accuracy = 1, scale = 1e-3, suffix = "k"),
+                        legend = TRUE, flip = FALSE) {
+  data |>
+    mutate(quant_num = parse_number(as.character(quant))) |>
+    mutate(bracket = 100 - abs(quant_num - 50))
+  gg <- ggplot(data, aes(x = {{x}}, y = income, color = quant, group = {{x}}))
+  gg <- gg + geom_path(linewidth = 3, color = "gray80")
+  gg <- gg + geom_point(aes(size = bracket), alpha = 0.8)
+  gg <- gg + scale_y_continuous(labels = y_labels)
+  gg <- gg + scale_color_viridis_d(option = "turbo", direction = -1)
+  gg <- gg + scale_size_continuous(range = c(5, 10), guide = guide_none())
+  gg <- gg + facet_grid(cols = vars({{facet}}))  
+  if (flip) {
+    gg <- gg + coord_flip()
+  }
+  gg
+}
+```
+
+force NA values for very small groups--only affects calcs by occupation group (production, natural resources, military)
+
+```{r}
+wages <- readRDS(here::here("input_data/income_tbls.rds")) |>
+  bind_rows(.id = "dim") |>
+  separate(dim, into = c("univ", "dim"), sep = "\\.") |>
+  mutate(time = ifelse(is_fulltime | univ == "full_time", "Full-time", "Part-time")) |>
+  mutate(edu = as.character(edu)) |>
+  mutate(across(c(sex, race, occ_group, time, edu), \(x) replace_na(x, "Total"))) |>
+  select(univ, dim, name, time, edu, sex, race, occ_group, count, sample_n, everything(), -is_fulltime) |>
+  mutate(across(c(univ, dim, name, time, edu, sex, race, occ_group), as_factor)) |>
+  mutate(across(c(time, edu, sex, race, occ_group), \(x) fct_relevel(x, "Total"))) |>
+  mutate(univ = fct_relevel(univ, "all_time") |> fct_relabel(str_remove, "_time")) |>
+  mutate(dim = fct_relevel(dim, "total", "sex", "time", "sex_x_time", "race", "edu", "occ") |>
+           fct_relevel("sex_x_edu_x_occ", after = Inf),
+         sex = fct_relevel(sex, "Total", "Male") |> fct_recode(Men = "Male", Women = "Female"),
+         race = fct_relevel(race, "Total", "White", "Black", "Latino") |> fct_recode("Other race" = "Other")) |>
+  mutate(is_small = sample_n < 30 | count < 100) |>
+  filter(name %in% c("US", "Connecticut")) |>
+  mutate(across(where(is.factor), fct_drop))
+
+summary(wages)
+count(wages, univ, dim)
+```
+
+
+```{r}
+distros <- readRDS(here::here("input_data/income_hists.rds")) |>
+  bind_rows(.id = "dim") |>
+  mutate(across(c(sex, race), \(x) replace_na(x, "Total"))) |>
+  select(dim, name, bin, sex, race, count, sample_n, everything()) |>
+  mutate(across(c(dim, name, sex, race), as_factor)) |>
+  mutate(sex = fct_relevel(sex, "Total", "Male") |> fct_recode(Men = "Male", Women = "Female"),
+         race = fct_relevel(race, "Total", "White", "Black", "Latino") |> fct_recode("Other race" = "Other")) |>
+  filter(name %in% c("US", "Connecticut"))
+
+summary(distros)
+```
+
+## median individual earnings, adults 25+ with positive earnings
+
+### full- and part-time
+
+#### total wages, CT vs US
+
+```{r}
+out[["total"]] <- wages |>
+  filter(univ == "all",
+         dim == "total") |>
+  select(univ:occ_group, income = earn_q50)
+
+make_bars(out$total, legend = FALSE)
+```
+
+#### wages by sex
+
+```{r}
+out[["all_by_sex"]] <- wages |>
+  filter(univ == "all",
+         dim == "sex") |>
+  select(univ:occ_group, income = earn_q50)
+
+make_bars(out$all_by_sex, legend = FALSE)
+```
+
+#### wages by time 
+
+```{r}
+out[["all_by_time"]] <- wages |>
+  filter(dim == "time") |>
+  select(univ:occ_group, income = earn_q50)
+
+make_bars(out$all_by_time, x = time, fill = time, legend = FALSE)
+```
+
+#### employment by sex x time
+
+women more likely work part-time
+
+```{r}
+out[["share_by_time"]] <- wages |>
+  filter(univ == "all",
+         dim == "sex_x_time") |>
+  group_by(univ, dim, name, edu, sex, race, occ_group) |>
+  mutate(share = stylehaven::round_sum100((count / sum(count)) * 100) / 100) |>
+  ungroup() |>
+  select(univ:occ_group, share)
+
+make_bars(out$share_by_time, y = share, fill = fct_rev(time), position = position_fill(), 
+            y_labels = scales::label_percent())
+```
+
+#### wages by sex x time
+
+```{r}
+out[["all_by_sex_x_time"]] <- wages |>
+  filter(univ == "all",
+         dim == "sex_x_time") |>
+  select(univ:occ_group, income = earn_q50)
+
+make_bars(out$all_by_sex_x_time, x = time)
+```
+
+### full-time only
+
+#### wages by sex
+
+
+```{r}
+out[["full_by_sex"]] <- wages |>
+  filter(univ == "full",
+         dim == "sex") |>
+  select(univ:occ_group, income = earn_q50)
+
+make_bars(out$full_by_sex, legend = FALSE)
+```
+
+#### wages by race
+
+
+```{r}
+#| fig-width: 9
+out[["full_by_race"]] <- wages |>
+  filter(univ == "full",
+         dim == "race") |>
+  select(univ:occ_group, income = earn_q50)
+
+make_bars(out$full_by_race, x = race, fill = race, legend = FALSE)
+```
+
+#### wages by edu
+
+```{r}
+#| fig-width: 9
+out[["full_by_edu"]] <- wages |>
+  filter(univ == "full",
+         dim == "edu") |>
+  select(univ:occ_group, income = earn_q50)
+
+make_bars(out$full_by_edu, x = edu, fill = edu, legend = FALSE) +
+  scale_x_discrete(labels = scales::label_wrap(10))
+```
+
+
+#### wages by sex x race
+
+```{r}
+#| fig-width: 9
+out[["full_by_race_x_sex"]] <- wages |>
+  filter(univ == "full",
+         dim %in% c("sex", "race_x_sex")) |>
+  select(univ:occ_group, income = earn_q50) |>
+  mutate(race = fct_reorder(race, income, .fun = max)) |>
+  arrange(race)
+
+out$full_by_race_x_sex |>
+  filter(name == "Connecticut") |>
+  make_dots()
+```
+
+
+#### wages by sex x edu
+
+```{r}
+#| fig-width: 9
+
+out[["full_by_sex_x_edu"]] <- wages |>
+  filter(univ == "full",
+         dim %in% c("sex", "sex_x_edu")) |>
+  select(univ:occ_group, income = earn_q50) |>
+  mutate(edu = fct_reorder(edu, income, .fun = max)) |>
+  arrange(edu)
+
+out$full_by_sex_x_edu |>
+  filter(name == "Connecticut") |>
+  make_dots(x = edu)
+```
+
+
+#### wages by occupation
+
+```{r}
+out[["full_by_occ"]] <- wages |>
+  filter(univ == "full",
+         dim == "occ",
+         !is_small) |>
+  select(univ:occ_group, income = earn_q50) |>
+  mutate(occ_group = fct_reorder(occ_group, income, .fun = max)) |>
+  arrange(occ_group)
+
+out$full_by_occ |>
+  filter(name == "Connecticut") |>
+  make_dots(x = occ_group, legend = FALSE) +
+  scale_x_discrete(labels = \(x) substring(x, 1, 25))
+```
+
+#### employment by occupation x sex
+
+```{r}
+wages |>
+  filter(univ == "full",
+         name == "Connecticut",
+         dim == "sex_x_occ") |>
+  group_by(occ_group) |>
+  filter(!any(is_small)) |>
+  ungroup() |>
+  select(univ, dim, name, time, occ_group, sex, count) |>
+  group_by(across(univ:occ_group)) |>
+  mutate(share = count / sum(count)) |>
+  filter(!any(share == 0)) |>
+  ungroup() |>
+  mutate(sex = fct_rev(sex)) |>
+  arrange(sex, share) |>
+  mutate(occ_group = fct_reorder2(occ_group, sex, share)) |>
+  ggplot(aes(x = occ_group, y = share, fill = sex)) +
+  geom_col(position = position_fill(reverse = TRUE), width = 0.8) +
+  geom_hline(yintercept = 0.5, linetype = "dotted") +
+  coord_flip() +
+  scale_x_discrete(labels = \(x) substring(x, 1, 25)) +
+  scale_fill_manual(values = pal)
+
+wages |>
+  filter(univ == "full",
+         name == "Connecticut",
+         dim == "sex_x_occ") |>
+  group_by(occ_group) |>
+  filter(!any(is_small)) |>
+  ungroup() |>
+  group_by(c(occ_group)) |>
+  mutate(share = count / sum(count)) |>
+  filter(!any(share == 0)) |>
+  ungroup() |>
+  filter(sex == "Women") |>
+  ggplot(aes(x = share, y = earn_q50, size = count)) +
+  geom_point(alpha = 0.8) +
+  scale_size_area()
+```
+
+
+#### wages by occupation x sex
+
+```{r}
+out[["full_by_sex_x_occ"]] <- wages |>
+  filter(univ == "full",
+         dim == "sex_x_occ") |>
+  group_by(name, occ_group) |>
+  filter(!any(is_small)) |>
+  ungroup() |>
+  select(univ:occ_group, income = earn_q50) |>
+  mutate(occ_group = fct_reorder(occ_group, income, .fun = max)) |>
+  arrange(occ_group)
+
+make_dots(filter(out$full_by_sex_x_occ, name == "Connecticut"), x = occ_group) +
+  scale_x_discrete(labels = \(x) substring(x, 1, 25))
+```
+
+#### wages by occupation x sex x edu
+
+```{r}
+#| fig-width: 9
+out[["full_by_sex_x_edu_x_occ"]] <- wages |>
+  filter(univ == "full",
+         dim == "sex_x_edu_x_occ") |>
+  group_by(name, occ_group) |>
+  filter(!any(is_small)) |>
+  ungroup() |>
+  select(univ:occ_group, income = earn_q50) |>
+  mutate(occ_group = fct_reorder(occ_group, income, .fun = max)) |>
+  arrange(occ_group)
+
+out$full_by_sex_x_edu_x_occ |>
+  filter(name == "Connecticut",
+         edu %in% c("High school or less", "Graduate degree")) |>
+  ggplot(aes(x = edu, y = income, color = sex, shape = edu, group = edu)) +
+  geom_path(color = "gray80", linewidth = 2) +
+  geom_point(size = 4) +
+  scale_y_continuous(labels = scales::label_dollar(scale = 1e-3, suffix = "k")) +
+  scale_color_manual(values = pal) +
+  coord_flip() +
+  facet_grid(rows = vars(fct_rev(occ_group)), switch = "y", 
+             labeller = labeller(.rows = \(x) substring(x, 1, 25))) +
+  theme(axis.text.y = element_blank(),
+        strip.text.y.left = element_text(angle = 0, hjust = 1))
+```
+
+## distribution of individual earnings
+
+```{r}
+#| fig-width: 9
+out[["full_quant_by_race_x_sex"]] <- wages |>
+  filter(name == "Connecticut",
+         univ == "full",
+         dim %in% c("sex", "race_x_sex")) |>
+  pivot_longer(matches("^earn_q\\d+$"), names_to = c(NA, "quant"), names_sep = "_") |>
+  select(univ:occ_group, quant, income = value)
+
+out$full_quant_by_race_x_sex |>
+  mutate(quant_num = parse_number(quant)) |>
+  mutate(bracket = 50 - abs(50 - quant_num)) |>
+  make_quants()
+```
+
+Full-time working Black & Latina women's 80th percentile incomes are lower than white & Asian men's medians
+
+```{r}
+wages |>
+  filter(name == "Connecticut",
+         (univ == "full" & dim %in% c("sex", "race_x_sex")) | (univ == "all" & dim %in% c("total", "time"))) |>
+  mutate(ratio_80_20 = earn_q80 / earn_q20) |>
+  select(univ, sex, race, earn_q20, earn_q80, ratio_80_20) |>
+  arrange(desc(ratio_80_20)) |>
+  print(n = Inf)
+```
+
+
+
+ratios to median men's pay are higher at lower levels except for API women, i.e. gaps are wider at higher incomes, but not huge differences.
+
+```{r}
+distros |>
+  filter(sex != "Total") |>
+  # filter(race == "Total") |>
+  group_by(name, sex, race) |>
+  mutate(share = count / sum(count)) |>
+  ggplot(aes(x = lower, y = share, fill = sex)) +
+  geom_col(position = position_identity(), alpha = 0.4) +
+  # scale_x_log10() +
+  facet_grid(rows = vars(race)) +
+  scale_fill_manual(values = pal, aesthetics = c("fill", "color"))
+```
+
+lol I spent a bunch of time figuring this out and it's kinda useless
+
+
+
+## output
+
+```{r}
+out_tbls <- out |>
+  map(function(df) {
+    if (unique(df$univ) == "full") {
+      df |> filter(name == "Connecticut")
+    } else {
+      df
+    }
+  })
+
+saveRDS(out_tbls, here::here("output_data/wage_gap_tbls.rds"))
+jsonlite::write_json(out_tbls, here::here("output_data/wage_gap_tbls.json"))
+```
+
