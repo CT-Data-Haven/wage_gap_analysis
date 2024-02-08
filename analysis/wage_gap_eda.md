@@ -1,5 +1,6 @@
 # wage gap EDA
 
+
 ## setup
 
 ``` r
@@ -128,41 +129,41 @@ summary(wages)
                                            Other race: 14  
                                                            
                                                     occ_group       count          
-     Total                                               :116   Min.   :       16  
-     Computer, Engineering, and Science                  : 22   1st Qu.:    25214  
-     Education, Legal, Community Service, Arts, and Media: 22   Median :   226500  
-     Healthcare Practitioners and Technical              : 22   Mean   :  4988851  
-     Management, Business, and Financial                 : 22   3rd Qu.:  2799982  
-     Natural Resources, Construction, and Maintenance    : 22   Max.   :148789069  
+     Total                                               :116   Min.   :       25  
+     Computer, Engineering, and Science                  : 22   1st Qu.:    26144  
+     Education, Legal, Community Service, Arts, and Media: 22   Median :   224656  
+     Healthcare Practitioners and Technical              : 22   Mean   :  5022127  
+     Management, Business, and Financial                 : 22   3rd Qu.:  2856804  
+     Natural Resources, Construction, and Maintenance    : 22   Max.   :149258984  
      (Other)                                             : 87                      
-        sample_n          count_se        earn_q20        earn_q25     
-     Min.   :      1   Min.   :   16   Min.   : 5526   Min.   :  7500  
-     1st Qu.:   1229   1st Qu.: 1009   1st Qu.:28737   1st Qu.: 31401  
-     Median :  10978   Median : 2883   Median :35588   Median : 39016  
-     Mean   : 228134   Mean   : 8001   Mean   :39256   Mean   : 43142  
-     3rd Qu.: 127631   3rd Qu.:10877   3rd Qu.:48553   3rd Qu.: 52988  
-     Max.   :6882061   Max.   :56492   Max.   :95378   Max.   :105976  
-                                                                       
+        sample_n          count_se        earn_q20         earn_q25     
+     Min.   :      1   Min.   :   22   Min.   :  6000   Min.   :  8038  
+     1st Qu.:   1207   1st Qu.: 1086   1st Qu.: 30000   1st Qu.: 33900  
+     Median :  11195   Median : 3038   Median : 38000   Median : 42086  
+     Mean   : 231074   Mean   : 8112   Mean   : 41641   Mean   : 45822  
+     3rd Qu.: 126729   3rd Qu.:11051   3rd Qu.: 50991   3rd Qu.: 56657  
+     Max.   :6946344   Max.   :57125   Max.   :103340   Max.   :105215  
+                                                                        
         earn_q50         earn_q75         earn_q80       earn_q20_se     
-     Min.   : 16184   Min.   : 31611   Min.   : 37247   Min.   :    0.0  
-     1st Qu.: 45845   1st Qu.: 68000   1st Qu.: 75000   1st Qu.:  123.2  
-     Median : 58264   Median : 84781   Median : 94203   Median :  351.5  
-     Mean   : 62927   Mean   : 93196   Mean   :103534   Mean   :  916.6  
-     3rd Qu.: 75243   3rd Qu.:110526   3rd Qu.:121579   3rd Qu.: 1136.8  
-     Max.   :160000   Max.   :361378   Max.   :430000   Max.   :10624.0  
+     Min.   : 17564   Min.   : 34447   Min.   : 35000   Min.   :    0.0  
+     1st Qu.: 48641   1st Qu.: 74583   1st Qu.: 80000   1st Qu.:  134.2  
+     Median : 62323   Median : 90000   Median : 99895   Median :  387.5  
+     Mean   : 67381   Mean   :100232   Mean   :111234   Mean   :  990.3  
+     3rd Qu.: 80665   3rd Qu.:120000   3rd Qu.:130935   3rd Qu.: 1318.5  
+     Max.   :172946   Max.   :370000   Max.   :460468   Max.   :10319.0  
                                                         NA's   :7        
-      earn_q25_se       earn_q50_se       earn_q75_se     earn_q80_se   
-     Min.   :    0.0   Min.   :    0.0   Min.   :    0   Min.   :    0  
-     1st Qu.:  124.5   1st Qu.:  183.0   1st Qu.:  271   1st Qu.:  296  
-     Median :  365.0   Median :  543.5   Median :  805   Median :  980  
-     Mean   :  978.4   Mean   : 1416.9   Mean   : 2053   Mean   : 2529  
-     3rd Qu.: 1239.0   3rd Qu.: 1420.8   3rd Qu.: 2412   3rd Qu.: 2740  
-     Max.   :14305.0   Max.   :24794.0   Max.   :24552   Max.   :69006  
-     NA's   :6         NA's   :5         NA's   :7       NA's   :6      
+      earn_q25_se       earn_q50_se     earn_q75_se       earn_q80_se   
+     Min.   :    0.0   Min.   :    0   Min.   :    0.0   Min.   :    0  
+     1st Qu.:  129.5   1st Qu.:  177   1st Qu.:  261.0   1st Qu.:  296  
+     Median :  474.0   Median :  610   Median :  957.5   Median :  993  
+     Mean   : 1126.2   Mean   : 1628   Mean   : 2180.8   Mean   : 2794  
+     3rd Qu.: 1358.0   3rd Qu.: 1702   3rd Qu.: 2461.5   3rd Qu.: 2870  
+     Max.   :11794.0   Max.   :26471   Max.   :27327.0   Max.   :96938  
+     NA's   :5         NA's   :4       NA's   :5         NA's   :6      
       is_small      
      Mode :logical  
-     FALSE:303      
-     TRUE :10       
+     FALSE:304      
+     TRUE :9        
                     
                     
                     
@@ -202,28 +203,28 @@ distros <- readRDS(here::here("input_data/income_hists.rds")) |>
 summary(distros)
 ```
 
-             dim               name                bin         sex     
-     sex       :163   Connecticut:967   [0,10000)    : 17   Total:292  
-     race      :292   Maryland   :  0   [10000,20000): 17   Men  :371  
-     race_x_sex:512                     [20000,30000): 17   Women:304  
-                                        [30000,40000): 17              
-                                        [40000,50000): 17              
-                                        [50000,60000): 17              
-                                        (Other)      :865              
-             race         count          sample_n         count_se     
-     Total     :163   Min.   :    2   Min.   :   1.0   Min.   :   2.0  
-     White     :249   1st Qu.:   38   1st Qu.:   2.0   1st Qu.:  27.0  
-     Black     :111   Median :  220   Median :  11.0   Median :  78.0  
-     Latino    :138   Mean   : 3691   Mean   : 174.7   Mean   : 207.3  
-     API       :171   3rd Qu.: 1753   3rd Qu.:  85.5   3rd Qu.: 238.0  
-     Other race:135   Max.   :87280   Max.   :4353.0   Max.   :1755.0  
-                                                                       
+             dim               name                 bin         sex     
+     sex       :166   Connecticut:1030   [0,10000)    : 17   Total:319  
+     race      :319   Maryland   :   0   [10000,20000): 17   Men  :393  
+     race_x_sex:545                      [20000,30000): 17   Women:318  
+                                         [30000,40000): 17              
+                                         [40000,50000): 17              
+                                         [50000,60000): 17              
+                                         (Other)      :928              
+             race         count            sample_n         count_se     
+     Total     :166   Min.   :    3.0   Min.   :   1.0   Min.   :   3.0  
+     White     :256   1st Qu.:   42.0   1st Qu.:   2.0   1st Qu.:  28.0  
+     Black     :125   Median :  245.5   Median :  13.0   Median :  83.0  
+     Latino    :147   Mean   : 3500.4   Mean   : 165.6   Mean   : 213.5  
+     API       :183   3rd Qu.: 1869.2   3rd Qu.:  89.0   3rd Qu.: 254.8  
+     Other race:153   Max.   :82825.0   Max.   :4074.0   Max.   :1784.0  
+                                                                         
          lower        
      Min.   :      0  
-     1st Qu.: 140000  
-     Median : 290000  
-     Mean   : 345698  
-     3rd Qu.: 480000  
+     1st Qu.: 150000  
+     Median : 300000  
+     Mean   : 360971  
+     3rd Qu.: 507500  
      Max.   :1000000  
                       
 
@@ -530,21 +531,21 @@ wages |>
     # A tibble: 15 × 6
        univ  sex   race       earn_q20 earn_q80 ratio_80_20
        <fct> <fct> <fct>         <dbl>    <dbl>       <dbl>
-     1 all   Total Total          7600    48749        6.41
-     2 all   Total Total         22105   100483        4.55
-     3 full  Women API           37764   127171        3.37
-     4 full  Men   API           46629   150000        3.22
-     5 full  Women Other race    32448   103857        3.20
-     6 full  Men   Total         41868   130837        3.12
-     7 all   Total Total         38684   115136        2.98
-     8 full  Men   White         49400   146537        2.97
-     9 full  Men   Other race    39600   117158        2.96
-    10 full  Women Total         35479   100000        2.82
-    11 full  Men   Latino        28737    80922        2.82
-    12 full  Women Latino        25421    68884        2.71
-    13 full  Men   Black         33158    88421        2.67
-    14 full  Women White         40271   105976        2.63
-    15 full  Women Black         30211    77455        2.56
+     1 all   Total Total          8183    52608        6.43
+     2 all   Total Total         24000   108091        4.50
+     3 full  Women API           38913   135977        3.49
+     4 full  Men   Other race    40188   129709        3.23
+     5 full  Women Other race    35022   112525        3.21
+     6 full  Men   API           50991   162137        3.18
+     7 full  Men   Total         45326   140519        3.10
+     8 all   Total Total         41075   124645        3.03
+     9 full  Men   White         52608   156732        2.98
+    10 full  Women Total         37891   108091        2.85
+    11 full  Women Latino        27023    75782        2.80
+    12 full  Women Black         32427    89561        2.76
+    13 full  Men   Latino        32427    89082        2.75
+    14 full  Men   Black         35670    97598        2.74
+    15 full  Women White         43255   114568        2.65
 
 ratios to median men’s pay are higher at lower levels except for API
 women, i.e. gaps are wider at higher incomes, but not huge differences.

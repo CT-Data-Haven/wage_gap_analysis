@@ -1,9 +1,10 @@
+# dropping PUMAs for now since they're not in the 2022 ipums yet
 # since I want to calculate nationwide values in addition to CT (and MD for class), I'm using ipumsr vignette on big data and reading pums data into a duckdb database. It's 15 million rows and some of these calculations are going to be impossible otherwise
 # database is in file pums.duckdb
 # also make tables of value labels to join
 con <- DBI::dbConnect(duckdb::duckdb(), "pums.duckdb")
 
-ddi <- ipumsr::read_ipums_ddi(here::here("fetch_data/usa_00079.xml"))
+ddi <- ipumsr::read_ipums_ddi(here::here("fetch_data/usa_00081.xml"))
 
 lookups <- list(sex = "SEX", race = "RACE", eth = "HISPAN", wks = "WKSWORK2") |>
   purrr::map(function(col) ipumsr::ipums_val_labels(ddi, col))
@@ -56,9 +57,12 @@ clean_pums <- function(chunk) {
     dplyr::left_join(lookups$occ,
               by = dplyr::join_by(dplyr::between(OCC, occ1, occ2))) |>
     dplyr::mutate(STATEFIP = stringr::str_pad(STATEFIP, 2, pad = "0")) |>
-    dplyr::mutate(PUMA = stringr::str_pad(as.integer(PUMA), 5, pad = "0")) |>
-    dplyr::mutate(geoid = paste0(STATEFIP, PUMA)) |>
-    dplyr::select(SERIAL, MULTYEAR, STRATA, CLUSTER, STATEFIP, geoid,
+    # dplyr::mutate(PUMA = stringr::str_pad(as.integer(PUMA), 5, pad = "0")) |>
+    # dplyr::mutate(geoid = paste0(STATEFIP, PUMA)) |>
+    dplyr::select(SERIAL, MULTYEAR, 
+          #  STRATA, 
+           CLUSTER, STATEFIP, 
+          #  geoid,
            PERNUM, PERWT, AGE, sex = sex_lbl, race = race2, edu = edu2,
            occ_group, occ_lbl, is_fulltime, INCEARN, INCEARN_CPIU_2010)
 }

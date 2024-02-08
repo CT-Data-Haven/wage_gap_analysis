@@ -417,6 +417,7 @@ distros |>
   # filter(race == "Total") |>
   group_by(name, sex, race) |>
   mutate(share = count / sum(count)) |>
+  filter(lower < 5e5) |>
   ggplot(aes(x = lower, y = share, fill = sex)) +
   geom_col(position = position_identity(), alpha = 0.4) +
   # scale_x_log10() +
