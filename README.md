@@ -1,5 +1,6 @@
 # wage gaps
 
+
 Prep wage gaps analysis for an updated interactive visualization.
 
 ## Setup

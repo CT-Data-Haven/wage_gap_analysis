@@ -31,6 +31,8 @@ rule eda:
 
 
 rule readme:
+    input:
+        "README.qmd",
     output:
         "README.md",
     shell:
@@ -41,6 +43,7 @@ rule all:
     default_target: True
     input:
         "README.md",
+        rules.eda.output
 
 
 rule list_rules:

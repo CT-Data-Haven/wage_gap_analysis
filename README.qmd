@@ -21,7 +21,7 @@ to rebuild the database.
 ```{bash}
 #| echo: false
 #| include: false
-snakemake --dag | dot -Tpng > dag.png
+snakemake --filegraph eda | dot -Tpng > dag.png
 ```
 
 Snakemake DAG: 
