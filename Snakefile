@@ -25,10 +25,21 @@ rule eda:
     output:
         "analysis/wage_gap_eda.md",
         "output_data/wage_gap_tbls.rds",
-        "output_data/wage_gap_tbls.json",
     shell:
         "quarto render analysis/wage_gap_eda.qmd"
 
+rule viz:
+    input:
+        data = "output_data/wage_gap_tbls.rds",
+        script = "prep_scripts/prep_json.R",
+    output:
+        "to_viz/wages.json",
+        "to_viz/meta.json",
+    shell: 
+        """
+        Rscript {input.script}
+        cp to_viz/* ~/code/wage-gap-24/src/data/
+        """
 
 rule readme:
     input:
@@ -43,7 +54,8 @@ rule all:
     default_target: True
     input:
         "README.md",
-        rules.eda.output
+        rules.eda.output,
+        rules.viz.output
 
 
 rule list_rules:

@@ -442,6 +442,6 @@ out_tbls <- out |>
   })
 
 saveRDS(out_tbls, here::here("output_data/wage_gap_tbls.rds"))
-jsonlite::write_json(out_tbls, here::here("output_data/wage_gap_tbls.json"))
+# jsonlite::write_json(out_tbls, here::here("output_data/wage_gap_tbls.json"))
 ```
 

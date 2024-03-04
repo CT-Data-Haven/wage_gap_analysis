@@ -556,6 +556,7 @@ distros |>
   # filter(race == "Total") |>
   group_by(name, sex, race) |>
   mutate(share = count / sum(count)) |>
+  filter(lower < 5e5) |>
   ggplot(aes(x = lower, y = share, fill = sex)) +
   geom_col(position = position_identity(), alpha = 0.4) +
   # scale_x_log10() +
@@ -580,5 +581,5 @@ out_tbls <- out |>
   })
 
 saveRDS(out_tbls, here::here("output_data/wage_gap_tbls.rds"))
-jsonlite::write_json(out_tbls, here::here("output_data/wage_gap_tbls.json"))
+# jsonlite::write_json(out_tbls, here::here("output_data/wage_gap_tbls.json"))
 ```
