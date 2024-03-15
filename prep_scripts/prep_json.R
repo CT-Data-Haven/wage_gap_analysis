@@ -95,7 +95,7 @@ meta <- tbls_out |>
 meta[["share_by_time"]][["chart_type"]] <- "bar"
 meta[["full_by_sex_x_occ"]][["direction"]] <- "horizontal"
 meta[["full_by_sex_x_occ"]][["chart_type"]] <- "point"
-meta[["full_by_sex_x_occ"]][["left"]] <- 280
+meta[["full_by_sex_x_occ"]][["left"]] <- 200
 meta[["full_by_sex_x_occ"]][["make_dumbbell"]] <- TRUE
 meta[["full_by_sex_x_occ"]][["use_labels"]] <- FALSE
 meta[["goal"]][["use_labels"]] <- FALSE
