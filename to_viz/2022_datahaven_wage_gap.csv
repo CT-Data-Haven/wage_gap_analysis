@@ -1,0 +1,70 @@
+page,universe,location,time,edu,sex,race_ethnicity,occupation,median_income,share
+total,all_workers,US,Total,Total,Total,Total,Total,47592,NA
+total,all_workers,Connecticut,Total,Total,Total,Total,Total,57050,NA
+all_by_sex,all_workers,US,Total,Total,Women,Total,Total,40188,NA
+all_by_sex,all_workers,US,Total,Total,Men,Total,Total,56000,NA
+all_by_sex,all_workers,Connecticut,Total,Total,Women,Total,Total,48225,NA
+all_by_sex,all_workers,Connecticut,Total,Total,Men,Total,Total,65936,NA
+share_by_time,all_workers,US,Part-time,Total,Women,Total,Total,NA,0.35
+share_by_time,all_workers,US,Full-time,Total,Women,Total,Total,NA,0.65
+share_by_time,all_workers,US,Part-time,Total,Men,Total,Total,NA,0.23
+share_by_time,all_workers,US,Full-time,Total,Men,Total,Total,NA,0.77
+share_by_time,all_workers,Connecticut,Part-time,Total,Women,Total,Total,NA,0.37
+share_by_time,all_workers,Connecticut,Full-time,Total,Women,Total,Total,NA,0.63
+share_by_time,all_workers,Connecticut,Part-time,Total,Men,Total,Total,NA,0.25
+share_by_time,all_workers,Connecticut,Full-time,Total,Men,Total,Total,NA,0.75
+all_by_sex_x_time,all_workers,US,Part-time,Total,Women,Total,Total,17564,NA
+all_by_sex_x_time,all_workers,US,Full-time,Total,Women,Total,Total,52608,NA
+all_by_sex_x_time,all_workers,US,Part-time,Total,Men,Total,Total,22663,NA
+all_by_sex_x_time,all_workers,US,Full-time,Total,Men,Total,Total,64855,NA
+all_by_sex_x_time,all_workers,Connecticut,Part-time,Total,Women,Total,Total,20862,NA
+all_by_sex_x_time,all_workers,Connecticut,Full-time,Total,Women,Total,Total,64855,NA
+all_by_sex_x_time,all_workers,Connecticut,Part-time,Total,Men,Total,Total,24000,NA
+all_by_sex_x_time,all_workers,Connecticut,Full-time,Total,Men,Total,Total,80000,NA
+full_by_edu,full_time_only,Connecticut,Full-time,High school or less,Total,Total,Total,50000,NA
+full_by_edu,full_time_only,Connecticut,Full-time,Some college or AA,Total,Total,Total,60000,NA
+full_by_edu,full_time_only,Connecticut,Full-time,Bachelors,Total,Total,Total,87679,NA
+full_by_edu,full_time_only,Connecticut,Full-time,Graduate degree,Total,Total,Total,108091,NA
+full_by_sex_x_edu,full_time_only,Connecticut,Full-time,High school or less,Women,Total,Total,43236,NA
+full_by_sex_x_edu,full_time_only,Connecticut,Full-time,High school or less,Men,Total,Total,56207,NA
+full_by_sex_x_edu,full_time_only,Connecticut,Full-time,Some college or AA,Women,Total,Total,52608,NA
+full_by_sex_x_edu,full_time_only,Connecticut,Full-time,Some college or AA,Men,Total,Total,68893,NA
+full_by_sex_x_edu,full_time_only,Connecticut,Full-time,Total,Women,Total,Total,64855,NA
+full_by_sex_x_edu,full_time_only,Connecticut,Full-time,Total,Men,Total,Total,80000,NA
+full_by_sex_x_edu,full_time_only,Connecticut,Full-time,Bachelors,Women,Total,Total,75920,NA
+full_by_sex_x_edu,full_time_only,Connecticut,Full-time,Bachelors,Men,Total,Total,100000,NA
+full_by_sex_x_edu,full_time_only,Connecticut,Full-time,Graduate degree,Women,Total,Total,95000,NA
+full_by_sex_x_edu,full_time_only,Connecticut,Full-time,Graduate degree,Men,Total,Total,129709,NA
+full_by_sex_x_occ,full_time_only,Connecticut,Full-time,Total,Women,Total,"Production, Transportation, and Material Moving",39728,NA
+full_by_sex_x_occ,full_time_only,Connecticut,Full-time,Total,Men,Total,"Production, Transportation, and Material Moving",54046,NA
+full_by_sex_x_occ,full_time_only,Connecticut,Full-time,Total,Women,Total,Service,37410,NA
+full_by_sex_x_occ,full_time_only,Connecticut,Full-time,Total,Men,Total,Service,54046,NA
+full_by_sex_x_occ,full_time_only,Connecticut,Full-time,Total,Women,Total,"Natural Resources, Construction, and Maintenance",50000,NA
+full_by_sex_x_occ,full_time_only,Connecticut,Full-time,Total,Men,Total,"Natural Resources, Construction, and Maintenance",62323,NA
+full_by_sex_x_occ,full_time_only,Connecticut,Full-time,Total,Women,Total,Sales and Office,53258,NA
+full_by_sex_x_occ,full_time_only,Connecticut,Full-time,Total,Men,Total,Sales and Office,70000,NA
+full_by_sex_x_occ,full_time_only,Connecticut,Full-time,Total,Women,Total,"Education, Legal, Community Service, Arts, and Media",70144,NA
+full_by_sex_x_occ,full_time_only,Connecticut,Full-time,Total,Men,Total,"Education, Legal, Community Service, Arts, and Media",90651,NA
+full_by_sex_x_occ,full_time_only,Connecticut,Full-time,Total,Women,Total,"Computer, Engineering, and Science",91857,NA
+full_by_sex_x_occ,full_time_only,Connecticut,Full-time,Total,Men,Total,"Computer, Engineering, and Science",103340,NA
+full_by_sex_x_occ,full_time_only,Connecticut,Full-time,Total,Women,Total,Healthcare Practitioners and Technical,87679,NA
+full_by_sex_x_occ,full_time_only,Connecticut,Full-time,Total,Men,Total,Healthcare Practitioners and Technical,109081,NA
+full_by_sex_x_occ,full_time_only,Connecticut,Full-time,Total,Women,Total,"Management, Business, and Financial",88635,NA
+full_by_sex_x_occ,full_time_only,Connecticut,Full-time,Total,Men,Total,"Management, Business, and Financial",116906,NA
+full_by_race,full_time_only,Connecticut,Full-time,Total,Total,Asian,Total,90000,NA
+full_by_race,full_time_only,Connecticut,Full-time,Total,Total,Black,Total,55000,NA
+full_by_race,full_time_only,Connecticut,Full-time,Total,Total,Latino,Total,47592,NA
+full_by_race,full_time_only,Connecticut,Full-time,Total,Total,Other race,Total,67988,NA
+full_by_race,full_time_only,Connecticut,Full-time,Total,Total,White,Total,80375,NA
+full_by_race_x_sex,full_time_only,Connecticut,Full-time,Total,Women,Latino,Total,43632,NA
+full_by_race_x_sex,full_time_only,Connecticut,Full-time,Total,Men,Latino,Total,51000,NA
+full_by_race_x_sex,full_time_only,Connecticut,Full-time,Total,Women,Black,Total,52000,NA
+full_by_race_x_sex,full_time_only,Connecticut,Full-time,Total,Men,Black,Total,57411,NA
+full_by_race_x_sex,full_time_only,Connecticut,Full-time,Total,Women,Other race,Total,65000,NA
+full_by_race_x_sex,full_time_only,Connecticut,Full-time,Total,Men,Other race,Total,70000,NA
+full_by_race_x_sex,full_time_only,Connecticut,Full-time,Total,Women,Total,Total,64855,NA
+full_by_race_x_sex,full_time_only,Connecticut,Full-time,Total,Men,Total,Total,80000,NA
+full_by_race_x_sex,full_time_only,Connecticut,Full-time,Total,Women,White,Total,71189,NA
+full_by_race_x_sex,full_time_only,Connecticut,Full-time,Total,Men,White,Total,88385,NA
+full_by_race_x_sex,full_time_only,Connecticut,Full-time,Total,Women,Asian,Total,75782,NA
+full_by_race_x_sex,full_time_only,Connecticut,Full-time,Total,Men,Asian,Total,100000,NA

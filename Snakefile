@@ -1,3 +1,6 @@
+from pathlib import Path
+viz_path = Path('~/code/wage-gap-24/')
+
 rule build_db:
     input:
         multiext("fetch_data/usa_00081", ".xml", ".dat.gz"),
@@ -31,19 +34,39 @@ rule eda:
 rule viz:
     input:
         data = "output_data/wage_gap_tbls.rds",
-        script = "prep_scripts/prep_json.R",
+        text = 'input_data/wage_gap_text.csv',
+        # script = "prep_scripts/prep_json.R",
     output:
-        "to_viz/wages.json",
-        "to_viz/meta.json",
-    shell: 
-        """
-        Rscript {input.script}
-        cp to_viz/* ~/code/wage-gap-24/src/data/
-        """
+        data = "to_viz/wages-data.json",
+        meta = "to_viz/wages-meta.json",
+        text = "to_viz/wages-text.json"
+    script:
+        "prep_scripts/prep_json.R"
+
+rule csv:
+    input:
+        data = "output_data/wage_gap_tbls.rds",
+        meta = "to_viz/wages-meta.json",
+        # script = 'prep_scripts/prep_download.R'
+    output:
+        csv = 'to_viz/2022_datahaven_wage_gap.csv',
+    script:
+        "prep_scripts/prep_download.R"
+
+rule distro:
+    input:
+        viz = rules.viz.output,
+        csv = rules.csv.output
+    params:
+        json_path = viz_path / 'src/data/',
+        csv_path = viz_path / 'public'
+    shell:
+        "cp {input.viz} {params.json_path} && cp {input.csv} {params.csv_path}"
+    
 
 rule readme:
     input:
-        "README.qmd",
+        'README.qmd',
     output:
         "README.md",
     shell:
@@ -55,7 +78,8 @@ rule all:
     input:
         "README.md",
         rules.eda.output,
-        rules.viz.output
+        rules.viz.output,
+        rules.csv.output
 
 
 rule list_rules:
