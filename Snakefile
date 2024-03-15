@@ -57,6 +57,8 @@ rule distro:
     input:
         viz = rules.viz.output,
         csv = rules.csv.output
+    output:
+        touch('viz_ready')
     params:
         json_path = viz_path / 'src/data/',
         csv_path = viz_path / 'public'
@@ -67,6 +69,7 @@ rule distro:
 rule readme:
     input:
         'README.qmd',
+        'Snakefile'
     output:
         "README.md",
     shell:
@@ -78,8 +81,7 @@ rule all:
     input:
         "README.md",
         rules.eda.output,
-        rules.viz.output,
-        rules.csv.output
+        rules.distro.output,
 
 
 rule list_rules:
